@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: std::cmp::PartialOrd + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: std::cmp::PartialOrd + Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -69,14 +69,43 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut merged_list = Self::new();
+        let mut i_a: i32 = 0;
+        let mut i_b: i32 = 0;
+        let mut val_a;
+        let mut val_b;
+        let mut node_a;
+        let mut node_b;
+
+        
+        while i_a < list_a.length as i32 || i_b < list_b.length as i32 {
+            node_a = list_a.get(i_a);
+            node_b = list_b.get(i_b);
+            if node_a.is_none() && node_b.is_none() {
+                break;
+            } else if node_a.is_none() {
+                merged_list.add((node_b.unwrap()).clone());
+                i_b += 1;
+            } else if node_b.is_none() {
+                merged_list.add((node_a.unwrap()).clone());
+                i_a += 1;
+            } else {
+                val_a = (node_a.unwrap()).clone();
+                val_b = (node_b.unwrap()).clone();
+                if val_a < val_b {
+                    merged_list.add(val_a);
+                    i_a += 1;
+                } else {
+                    merged_list.add(val_b);
+                    i_b += 1;
+                }
+            }
         }
+
+        merged_list
 	}
 }
 
